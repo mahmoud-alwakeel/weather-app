@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:weather_app/models/weather_model.dart';
+import 'package:weather_app/providers/weather_provider.dart';
 import 'package:weather_app/services/weather_services.dart';
 
 class SearchScreen extends StatelessWidget {
   String? cityName;
 
-  SearchScreen({super.key});
+  VoidCallback? updateUI;
+
+  SearchScreen({required this.updateUI});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,8 +25,12 @@ class SearchScreen extends StatelessWidget {
             onSubmitted: (data) async{
               cityName = data;
               WeatherServices weatherServices = WeatherServices();
-              WeatherModel weatherModel = await weatherServices.getWeather(cityName: cityName!);
-              print(weatherModel);
+              WeatherModel weather = await weatherServices.getWeather(cityName: cityName!);
+              //print(weatherModel);
+              Provider.of<WeatherProvider>(context, listen: false).weatherData = weather;
+              //updateUI!();
+              Navigator.pop(context);
+
             },
             decoration: const InputDecoration(
               hintText: 'enter a city',
