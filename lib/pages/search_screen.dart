@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:weather_app/models/weather_model.dart';
 import 'package:weather_app/services/weather_services.dart';
 
-class SearchPage extends StatelessWidget {
+class SearchScreen extends StatelessWidget {
   String? cityName;
+
+  SearchScreen({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -15,10 +18,11 @@ class SearchPage extends StatelessWidget {
           child: TextField(
             // onSubmitted is when i finish the word and press search
             // while onChanged when i right a new letter it's updated ex: google search
-            onSubmitted: (data){
+            onSubmitted: (data) async{
               cityName = data;
               WeatherServices weatherServices = WeatherServices();
-              weatherServices.getWeather(cityName: cityName!);
+              WeatherModel weatherModel = await weatherServices.getWeather(cityName: cityName!);
+              print(weatherModel);
             },
             decoration: const InputDecoration(
               hintText: 'enter a city',
