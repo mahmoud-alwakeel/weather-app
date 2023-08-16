@@ -20,21 +20,35 @@ class SearchScreen extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: TextField(
+            onChanged: (data){
+              cityName = data;
+            },
             // onSubmitted is when i finish the word and press search
             // while onChanged when i right a new letter it's updated ex: google search
             onSubmitted: (data) async{
               cityName = data;
               WeatherServices weatherServices = WeatherServices();
-              WeatherModel weather = await weatherServices.getWeather(cityName: cityName!);
+              WeatherModel? weather = await weatherServices.getWeather(cityName: cityName!);
               //print(weatherModel);
               Provider.of<WeatherProvider>(context, listen: false).weatherData = weather;
+              Provider.of<WeatherProvider>(context, listen: false).cityName = cityName;
               //updateUI!();
               Navigator.pop(context);
 
             },
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               hintText: 'enter a city',
-              suffixIcon: Icon(Icons.search),
+              suffixIcon: GestureDetector(
+                onTap: () async {
+                  WeatherServices weatherServices = WeatherServices();
+                  WeatherModel? weather = await weatherServices.getWeather(cityName: cityName!);
+                  //print(weatherModel);
+                  Provider.of<WeatherProvider>(context, listen: false).weatherData = weather;
+                  Provider.of<WeatherProvider>(context, listen: false).cityName = cityName;
+                  //updateUI!();
+                  Navigator.pop(context);
+                },
+                  child: Icon(Icons.search)),
               label: Text('search'),
               border: OutlineInputBorder(),
               contentPadding: EdgeInsets.symmetric(vertical: 30, horizontal: 18)
